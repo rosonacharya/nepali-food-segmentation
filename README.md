@@ -18,6 +18,123 @@ The deployed application allows users to:
 * View the original image alongside the segmentation output
 
 > **Note:** The area percentage reported by this application represents the proportion of image pixels assigned to each food class. It is not a direct measurement of food mass, physical volume, serving size, or calorie content.
+## Dataset Development and Model Evaluation
+
+A dedicated Nepali food image dataset was developed for the semantic segmentation task. The dataset development process included **food image collection, data refinement, pixel-level annotation, quality checking, dataset splitting, and model evaluation**.
+
+### Dataset Preparation
+
+The dataset was prepared through the following stages:
+
+1. **Image Collection**
+   Nepali food images were collected to represent common food items found in Nepali meals.
+
+2. **Data Refinement**
+   The collected images were reviewed and refined to remove unsuitable, duplicate, or unusable samples and to improve the consistency of the dataset.
+
+3. **Pixel-Level Annotation**
+   Food regions in the images were manually annotated using **CVAT (Computer Vision Annotation Tool)**. Each food item was assigned to its corresponding semantic class at the pixel level.
+
+4. **Annotation Quality Checking**
+   The generated image-mask pairs were checked for annotation consistency, image-mask correspondence, valid dimensions, expected mask labels/colors, empty masks, and other potential data-quality issues.
+
+5. **Dataset Splitting**
+   The finalized dataset was divided into training, validation, and test sets. The split was performed while considering the presence of different food classes to maintain class representation across the subsets.
+
+### Dataset Classes
+
+The segmentation dataset contains **9 semantic classes**, consisting of 8 food categories and a background class:
+
+| Class           | Category   |
+| --------------- | ---------- |
+| Background      | Background |
+| Chutney         | Food       |
+| Ghundruk        | Food       |
+| Lentil (Dal)    | Food       |
+| Meat Curry      | Food       |
+| Rice (Bhat)     | Food       |
+| Salad           | Food       |
+| Spinach (Saag)  | Food       |
+| Vegetable Curry | Food       |
+
+### Exploratory Data Analysis and Quality Assessment
+
+Before model training, the dataset was examined using several analyses, including:
+
+* Class presence distribution
+* Pixel-level class distribution
+* Class co-occurrence
+* Relative food-region area
+* Image dimensions and aspect ratios
+* Image-mask correspondence
+* Mask label/color validation
+* Empty-mask and invalid-sample checking
+
+These analyses were used to understand the characteristics of the dataset and identify potential class-imbalance and annotation issues before model training.
+
+### Evaluation of Multiple Segmentation Models
+
+To investigate the effectiveness of different deep learning architectures for Nepali food semantic segmentation, the dataset was used to train and evaluate **five segmentation models**.
+
+The evaluated architectures included:
+
+| Model       | Backbone / Architecture |
+| ----------- | ----------------------- |
+| FCN         | ResNet-50               |
+| U-Net       | ResNet-50               |
+| DeepLabV3+  | ResNet-50               |
+| SegFormer   | MiT-B2                  |
+| Mask2Former | Swin-Tiny               |
+
+The models were evaluated using segmentation-specific metrics, including:
+
+* **Mean Intersection over Union (mIoU)**
+* **Mean Dice coefficient**
+* **Pixel Accuracy**
+* **Per-class IoU**
+* **Per-class Dice score**
+* **Test loss**
+
+The evaluation was performed using the same overall dataset framework to provide a consistent basis for comparing segmentation performance across the different architectures.
+
+### Research Workflow
+
+```text
+Nepali Food Image Collection
+            │
+            ▼
+      Data Refinement
+            │
+            ▼
+     CVAT Pixel Annotation
+            │
+            ▼
+   Annotation Quality Checking
+            │
+            ▼
+     Exploratory Data Analysis
+            │
+            ▼
+       Train / Validation / Test
+            │
+            ▼
+     ┌──────┼────────┬──────────┐
+     ▼      ▼        ▼          ▼
+    FCN    U-Net  DeepLabV3+ SegFormer
+     │      │        │          │
+     └──────┴────────┴──────────┘
+                    │
+                    ▼
+              Mask2Former
+                    │
+                    ▼
+          Comparative Evaluation
+                    │
+                    ▼
+          Final Segmentation Model
+```
+
+The dataset and model evaluation process provides the experimental foundation for the deployed SegFormer-based application.
 
 ---
 
@@ -37,51 +154,9 @@ best_model.pth
 
 ---
 
-## Food Classes
-
-The model uses **9 semantic classes**, including background:
-
-| ID | Class           |
-| -: | --------------- |
-|  0 | Background      |
-|  1 | Chutney         |
-|  2 | Ghundruk        |
-|  3 | Lentil (Dal)    |
-|  4 | Meat Curry      |
-|  5 | Rice (Bhat)     |
-|  6 | Salad           |
-|  7 | Spinach (Saag)  |
-|  8 | Vegetable Curry |
-
+ 
 ---
-
-## Application Workflow
-
-```text
-             Input Food Image
-                    │
-                    ▼
-             Image Preprocessing
-                    │
-                    ▼
-             SegFormer MiT-B2
-                    │
-                    ▼
-          Pixel-Level Segmentation
-                    │
-             ┌──────┴──────┐
-             ▼             ▼
-       Food Classes    Segmentation Mask
-             │             │
-             └──────┬──────┘
-                    ▼
-          Relative Area Percentage
-                    │
-                    ▼
-             Visual Results
-```
-
----
+ 
 
 ## Project Structure
 
@@ -123,16 +198,7 @@ cd nepali-food-segmentation
 
 ### 2. Install Dependencies
 
-It is recommended to use a Python virtual environment.
-
-```bash
-python -m venv venv
-```
-
-Activate the environment on Windows:
-
-```bash
-venv\Scripts\activate
+ 
 ```
 
 Install the required packages:

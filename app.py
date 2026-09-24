@@ -9,9 +9,12 @@ import hashlib
 
 import numpy as np
 import streamlit as st
+
 import torch
+import torchvision
 
 from PIL import Image, ImageFilter
+
 from transformers import (
     SegformerConfig,
     SegformerForSemanticSegmentation,

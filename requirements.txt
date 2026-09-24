@@ -1,5 +1,9 @@
 streamlit
 torch
+torchvision
 transformers
 Pillow
 numpy
+opencv-python-headless
+matplotlib
+scikit-learn
